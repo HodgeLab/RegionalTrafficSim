@@ -1,4 +1,4 @@
-def set_paths(source)
+def set_paths(source):
     # Set directories
     if source == "Surf":
         home_dir = r"C:\Users\antho\github\RegionalTrafficSim"
