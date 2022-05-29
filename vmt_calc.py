@@ -43,17 +43,26 @@ os.chdir(output_dir)
 for g in range(tr1, tr2):
     # Function for tract distance calculation
     [tot_tract_distance, checks] = tract_distance(g, tot_tracts, BTS_df, ACS_df, checks)
-    # geo_distance.append(tot_tract_distance)
+    geo_distance.append(tot_tract_distance)
     g_dist_sum.append(sum(tot_tract_distance))
-    print("TRACTS COMPLETE: ", g)
 
-wb1 = xlsxwriter.Workbook('Tract_Distances_p' + pt_num + '.xlsx')
+wb1 = xlsxwriter.Workbook('Total_Tract_Distances_p' + pt_num + '.xlsx')
 w1 = wb1.add_worksheet('Tract VMT')
 w1.write(0, 0, 'Tract Names')
 w1.write(0, 1, 'Total Distance')
 w1.write_column(1, 0, tot_tracts[tr1:tr2])
 w1.write_column(1, 1, g_dist_sum)
 wb1.close()
+
+hours_year = [elem for elem in range(8808)]
+wb2 = xlsxwriter.Workbook('Tract_Hourly_Distances_p' + pt_num + '.xlsx')
+wk2 = wb2.add_worksheet('Hourly VMT')
+wk2.write(0, 0, 'Hour')
+wk2.write_row(0, 1, tot_tracts[tr1:tr2])
+wk2.write_column(1, 0, hours_year)
+for g in range(tr1, tr2):
+    wk2.write_column(g-tr1, 0, geo_distance[g])
+wb2.close()
 
 """
 ADDRESS THIS WHEN CONSUMPTION IS INTRODUCED (SEPARATE FUNCTION)
