@@ -3,7 +3,8 @@ from vtrp_distance import vtrp_distance
 from temp_scaling import temp_scaling
 from hh_vtrp_set import hh_vtrp_set
 import numpy as np
-def hh_distance(ACS_tract_df, BTS_tract_df, ug_scale, nan_check, checks):
+import pandas as pd
+def hh_distance(ACS_tract_df, BTS_tract_df, ug_scale, nan_check, checks, track_purpose):
     surp_energy = 0
     surp_charge = np.zeros(24)
     max_daily_energy = 0
@@ -16,6 +17,8 @@ def hh_distance(ACS_tract_df, BTS_tract_df, ug_scale, nan_check, checks):
     # ann_hourly_home_energy = np.zeros(8808)
     home_hourly_dist = np.zeros(8808) # Track home-trips per hh ONLY
 
+    purp_list = ["Home", "Work", "School", "Med", "Shop", "Social", "Transport", "Meals", "Other"]
+    dist_by_purp = np.zeros(9)
     #FUNCTION FOR ROOMS AND VEHICLES
     [hh_mem_i, av_veh_i, checks] = hh_details_set(ACS_tract_df, BTS_tract_df, checks)
     # FUNCTION FOR ESTABLISHING VEHICLE TRIPS
@@ -40,11 +43,13 @@ def hh_distance(ACS_tract_df, BTS_tract_df, ug_scale, nan_check, checks):
                 vtrp_purp_pct = [34.04, 19.84, 2.7, 1.68, 16.62, 6.28,
                                  10.97, 6.78, 1.09]
 
-            [vtrp_dist_x, start_time_x, start_point, home_hourly_dist] = vtrp_distance(x, vtrp_i, day, dist_ind, dist_arr, vtrp_purp_pct, start_point, home_hourly_dist)
+            [vtrp_dist_x, purp_x, start_time_x, start_point, home_hourly_dist, track_purpose] = vtrp_distance(x, vtrp_i, day, dist_ind, dist_arr, vtrp_purp_pct, start_point, home_hourly_dist, track_purpose)
             # Apply Geo and Temp Scaling to Trip Distance
             vtrp_dist_x = vtrp_dist_x*ug_scale*wkday_scale*month_scale
             # Add trip distance to total household hourly distance
             hh_hourly_dist[start_time_x[0]] = hh_hourly_dist[start_time_x[0]]+vtrp_dist_x
+            trip_idx = purp_list.index(purp_x)
+            dist_by_purp[trip_idx] = dist_by_purp[trip_idx] + vtrp_dist_x
 
             # Adjusting to Annual Hour
             s_t = start_time_x[0]
@@ -55,4 +60,4 @@ def hh_distance(ACS_tract_df, BTS_tract_df, ug_scale, nan_check, checks):
             # CALCULATE THIS LATER, ELEMENT BY ELEMENT
 #            ann_hourly_energy[s_h] = ann_hourly_energy[s_h] + ev_pct/100*ldv_rate*vtrp_dist_x
 
-    return [ann_hourly_dist, checks]
+    return [ann_hourly_dist, checks, track_purpose, dist_by_purp]

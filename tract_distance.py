@@ -1,9 +1,10 @@
 import numpy as np
 from hh_distance import hh_distance
 from vacancy_check import vacancy_check
-def tract_distance(g, tot_tracts, BTS_df, ACS_df, checks):
+def tract_distance(g, tot_tracts, BTS_df, ACS_df, checks, track_purpose):
     # Initialize tracking parameters
     tot_tract_hourly_dist = np.zeros(8808)
+    tract_dist_by_purp = np.zeros(9)
     # tot_tract_hourly_energy = np.zeros(8808)
     # tot_tract_h_hourly_energy = np.zeros(8808)
     # # Initiate In-Home Charging parameters
@@ -36,7 +37,8 @@ def tract_distance(g, tot_tracts, BTS_df, ACS_df, checks):
     nan_check = np.isnan(np.sum(BTS_tract_df.values[0]))
 
     for hh in range(hh_cnt):
-        [ann_hourly_dist, checks] = hh_distance(ACS_tract_df, BTS_tract_df, ug_scale, nan_check, checks)
+        [ann_hourly_dist, checks, track_purpose, dist_by_purp] = hh_distance(ACS_tract_df, BTS_tract_df, ug_scale, nan_check, checks, track_purpose)
         tot_tract_hourly_dist = tot_tract_hourly_dist + ann_hourly_dist
+        tract_dist_by_purp = tract_dist_by_purp + dist_by_purp
 
-    return [tot_tract_hourly_dist, checks]
+    return [tot_tract_hourly_dist, checks, track_purpose, tract_dist_by_purp]

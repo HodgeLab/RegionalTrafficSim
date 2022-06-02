@@ -1,7 +1,7 @@
 import random
 import numpy as np
 from trip_purpose import trip_purpose
-def vtrp_distance(x, vtrp_i, day, dist_ind, dist_arr, vtrp_purp_pct, start_point, home_hourly_dist):
+def vtrp_distance(x, vtrp_i, day, dist_ind, dist_arr, vtrp_purp_pct, start_point, home_hourly_dist, track_purpose):
     # Vehicle Trip Purpose Index (NHTS 2017 Trip Purpose Summary)
     vtrp_purp_ind = ["Home","Work", "School", "Med", "Shop", "Social",
                      "Transport", "Meals", "Other"]
@@ -21,7 +21,7 @@ def vtrp_distance(x, vtrp_i, day, dist_ind, dist_arr, vtrp_purp_pct, start_point
     start_point = purp_x
 
     # Determine weights based on trip purpose
-    [start_time_pct, start_time_ind, vtrp_dist_pct] = trip_purpose(purp_x)
+    [start_time_pct, start_time_ind, vtrp_dist_pct, track_purpose] = trip_purpose(purp_x, track_purpose)
     # Calculate trip start time, distance range, and distance
     start_time_x = random.choices(start_time_ind, weights = start_time_pct, k=1)
     dist_range = random.choices(dist_ind, weights = vtrp_dist_pct, k=1)
@@ -35,4 +35,4 @@ def vtrp_distance(x, vtrp_i, day, dist_ind, dist_arr, vtrp_purp_pct, start_point
         # Track ONLY home trip distance (for use in home charging scenarios)
         home_hourly_dist[s_h] = home_hourly_dist[s_h] + 1
 
-    return [vtrp_dist_x, start_time_x, start_point, home_hourly_dist]
+    return [vtrp_dist_x, purp_x, start_time_x, start_point, home_hourly_dist, track_purpose]
