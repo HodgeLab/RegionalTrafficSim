@@ -21,13 +21,13 @@ def vtrp_distance(x, vtrp_i, day, dist_ind, dist_arr, vtrp_purp_pct, start_point
     start_point = purp_x
 
     # Determine weights based on trip purpose
-    [start_time_pct, start_time_ind, vtrp_dist_pct, track_purpose] = trip_purpose(purp_x, track_purpose)
+    [start_time_pct, start_time_ind, vtrp_dist_pct, long_dist_cap, track_purpose] = trip_purpose(purp_x, track_purpose)
     # Calculate trip start time, distance range, and distance
     start_time_x = random.choices(start_time_ind, weights = start_time_pct, k=1)
     dist_range = random.choices(dist_ind, weights = vtrp_dist_pct, k=1)
+    dist_arr[10][1] = long_dist_cap
     dist_range = dist_range[0]
-    vtrp_dist_x = (dist_arr[dist_range][1]-dist_arr[dist_range][0]
-                   *random.random()+dist_arr[dist_range][0])
+    vtrp_dist_x = (dist_arr[dist_range][1]-dist_arr[dist_range][0])*random.random() + dist_arr[dist_range][0]
 
     if purp_x == "Home":
         s_t = start_time_x[0]

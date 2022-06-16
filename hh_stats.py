@@ -1,5 +1,6 @@
 # SEPARATE IMPORTS BY FUNCTIONS
 import os
+import sys
 import random
 import xlsxwriter
 import numpy as np
@@ -37,7 +38,7 @@ checks = [no_room_exists, hh_mem_not_int, supplanted_tracts, single_veh_double_r
 [og_load_list, ACS_df, BTS_df, links_df, tract_by_county_df, geo_df] = data_gather(data_dir)
 # Generate List of Tracts
 tot_tracts = tract_generation(og_load_list, geo_df, tract_by_county_df)
-wb1 = xlsxwriter.Workbook('Tract_Statistics' + pt_num + '.xlsx')
+wb1 = xlsxwriter.Workbook('Tract_Statistics_p' + pt_num + '.xlsx')
 w1 = wb1.add_worksheet('Stats')
 w1.write(0, 0, 'Tract Names')
 w1.write(0, 1, 'Member Averages')
@@ -64,7 +65,7 @@ for g in range(tr1, tr2):
     nan_check = np.isnan(np.sum(BTS_tract_df.values[0]))
 
     for hh in range(hh_cnt):
-        [hh_mem_i, av_veh_i, no_room_exists, hh_mem_not_int] = hh_details_set(BTS_tract_df, ACS_tract_df, no_room_exists, hh_mem_not_int)
+        [hh_mem_i, av_veh_i, checks] = hh_details_set(ACS_tract_df, BTS_tract_df, checks)
         tract_mem.append(hh_mem_i)
         tract_veh.append(av_veh_i)
 
