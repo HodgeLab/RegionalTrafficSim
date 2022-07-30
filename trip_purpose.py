@@ -8,7 +8,7 @@ def trip_purpose(purp_x, track_purpose):
                           16, 17, 18, 19, 20, 21, 22, 23]
         # Vehicle Work-Trip Distance by weight (NHTS 2017 Trip Distance)
         vtrp_dist_pct = [3.3, 14.9, 13.9, 9.9, 8.4, 6.2, 18.1, 9.0, 5.4, 5.6, 5.2]
-        long_dist_cap = 129.18
+        long_dist_metrics = [0.32, 79.84]#129.18
         track_purpose[0] += 1
     elif purp_x == "Work":
         start_time_pct = [0.03, 0.00, 0.00, 0.06, 2.32, 6.16, 14.61, 21.76,
@@ -17,7 +17,7 @@ def trip_purpose(purp_x, track_purpose):
         start_time_ind = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
                           16, 17, 18, 19, 20, 21, 22, 23]
         vtrp_dist_pct = [2.6, 10, 9.3, 7.6, 6.3, 6.0, 19.6, 13.4, 8.2, 9.4, 7.3]
-        long_dist_cap = 115.24
+        long_dist_metrics = [0.3, 72.87]#115.24
         track_purpose[1] += 1
     elif purp_x == "School":
         start_time_pct = [0, 0, 0, 0, 0.15, 0.77, 4.78, 13.73, 14.97, 14.66,
@@ -26,7 +26,7 @@ def trip_purpose(purp_x, track_purpose):
         start_time_ind = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
                           16, 17, 18, 19, 20, 21, 22, 23]
         vtrp_dist_pct = [3.2, 13, 12, 9.7, 8.8, 6.3, 19.3, 11.7, 4.9, 6.6, 4.4]
-        long_dist_cap = 92.6
+        long_dist_metrics = [0.29, 61.55]#92.6
         track_purpose[2] += 1
     elif purp_x == "Med":
         start_time_pct = [0, 0, 0, 0, 0.38, 0.38, 1.92, 7.31, 11.54, 17.69,
@@ -35,7 +35,7 @@ def trip_purpose(purp_x, track_purpose):
         start_time_ind = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
                           16, 17, 18, 19, 20, 21, 22, 23]
         vtrp_dist_pct = [2.9, 9.5, 11.8, 8.2, 8, 7.5, 21.1, 11.3, 7.4, 6.2, 6.2]
-        long_dist_cap = 72.1
+        long_dist_metrics = [0.25, 51.3]#72.1
         track_purpose[3] += 1
     elif purp_x == "Shop":
         start_time_pct = [0.141, 0, 0, 0, 0.057, 0.311, 1.102, 2.402, 4.747,
@@ -44,7 +44,7 @@ def trip_purpose(purp_x, track_purpose):
         start_time_ind = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
                           16, 17, 18, 19, 20, 21, 22, 23]
         vtrp_dist_pct = [8.8, 21.7, 17.7, 11.3, 7.8, 5.7, 13.2, 6.1, 3, 2.4, 2.8]
-        long_dist_cap = 183.28
+        long_dist_metrics = [0.3, 106.89]#183.28
         track_purpose[4] += 1
     elif purp_x == "Social":
         start_time_pct = [0.07, 0.07, 0.07, 0, 0.49, 1.34, 1.9, 3.87, 5.41,
@@ -53,7 +53,7 @@ def trip_purpose(purp_x, track_purpose):
         start_time_ind = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
                           16, 17, 18, 19, 20, 21, 22, 23]
         vtrp_dist_pct = [3.4, 12.9, 12.1, 10.3, 8.2, 5.8, 18.6, 8.9, 5.7, 5.4, 8.7]
-        long_dist_cap = 163.62
+        long_dist_metrics = [0.29, 97.06]#163.6
         track_purpose[5] += 1
     elif purp_x == "Transport":
         start_time_pct = [0.17, 0.17, 0.06, 0, 0.5, 0.94, 4.98, 21.76, 7.03,
@@ -62,7 +62,7 @@ def trip_purpose(purp_x, track_purpose):
         start_time_ind = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
                           16, 17, 18, 19, 20, 21, 22, 23]
         vtrp_dist_pct = [5, 19.5, 15.8, 11.3, 7.6, 6.5, 16.2, 7.5, 4.1, 3.3, 3.1]
-        long_dist_cap = 129.62
+        long_dist_metrics = [0.32, 80.06]#129.62
         track_purpose[6] += 1
     elif purp_x == "Meals":
         start_time_pct = [0.21, 0.07, 0, 0, 0.35, 0.84, 2.31, 4.20, 4.20,
@@ -71,7 +71,7 @@ def trip_purpose(purp_x, track_purpose):
         start_time_ind = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
                           16, 17, 18, 19, 20, 21, 22, 23]
         vtrp_dist_pct = [7.3, 21.4, 17.6, 11.5, 7.9, 6.3, 13.4, 5.6, 3, 3.2, 2.9]
-        long_dist_cap = 221.52
+        long_dist_metrics = [0.32, 126.01]#221.52
         track_purpose[7] += 1
     elif purp_x == "Other":
         start_time_pct = [0, 0, 0, 0, 0.51, 2.05, 3.59, 7.18, 8.72, 9.74,
@@ -80,7 +80,7 @@ def trip_purpose(purp_x, track_purpose):
         start_time_ind = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
                           16, 17, 18, 19, 20, 21, 22, 23]
         vtrp_dist_pct = [4.4, 13, 11.3, 9.9, 6.4, 5.6, 21, 9.9, 5.4, 5.4, 7.7]
-        long_dist_cap = 112.46
+        long_dist_metrics = [0.26, 71.48]#112.46
         track_purpose[8] += 1
 
-    return [start_time_pct, start_time_ind, vtrp_dist_pct, long_dist_cap, track_purpose]
+    return [start_time_pct, start_time_ind, vtrp_dist_pct, long_dist_metrics, track_purpose]

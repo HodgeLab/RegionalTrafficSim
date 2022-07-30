@@ -43,7 +43,7 @@ def hh_distance(ACS_tract_df, BTS_tract_df, ug_scale, nan_check, checks, track_p
                 vtrp_purp_pct = [34.04, 19.84, 2.7, 1.68, 16.62, 6.28,
                                  10.97, 6.78, 1.09]
 
-            [vtrp_dist_x, purp_x, start_time_x, start_point, home_hourly_dist, track_purpose] = vtrp_distance(x, vtrp_i, day, dist_ind, dist_arr, vtrp_purp_pct, start_point, home_hourly_dist, track_purpose)
+            [vtrp_dist_x, purp_x, start_time_x, start_point, home_hourly_dist, track_purpose, checks] = vtrp_distance(x, vtrp_i, day, dist_ind, dist_arr, vtrp_purp_pct, start_point, home_hourly_dist, track_purpose, checks)
             # Apply Geo and Temp Scaling to Trip Distance
             vtrp_dist_x = vtrp_dist_x*ug_scale*wkday_scale*month_scale
             # Add trip distance to total household hourly distance
