@@ -4,9 +4,16 @@ import sys
 import random
 import xlsxwriter
 import numpy as np
-import pandas as pd
+
+source = sys.argv[1]
+pt_num = sys.argv[2]
+tr1 = int(sys.argv[3])
+tr2 = int(sys.argv[4])
 
 from set_paths import set_paths
+# Set Directories
+[home_dir, data_dir, output_dir] = set_paths(source)
+
 from data_gather import data_gather
 from hh_vtrp_set import hh_vtrp_set
 from vacancy_check import vacancy_check
@@ -15,14 +22,6 @@ from tract_generation import tract_generation
 
 # Set seed for stochastics to maintain repeatability across results
 random.seed(26)
-
-source = sys.argv[1]
-pt_num = sys.argv[2]
-tr1 = int(sys.argv[3])
-tr2 = int(sys.argv[4])
-# Set Directories
-[home_dir, data_dir, output_dir] = set_paths(source)
-os.chdir(output_dir)
 
 # pre-set day-long and year-long hourly lists
 hours_day = [elem for elem in range(24)]
@@ -38,6 +37,8 @@ checks = [no_room_exists, hh_mem_not_int, supplanted_tracts, single_veh_double_r
 [og_load_list, ACS_df, BTS_df, links_df, tract_by_county_df, geo_df] = data_gather(data_dir)
 # Generate List of Tracts
 tot_tracts = tract_generation(og_load_list, geo_df, tract_by_county_df)
+# Set Directory
+os.chdir(output_dir)
 wb1 = xlsxwriter.Workbook('Tract_Statistics_p' + pt_num + '.xlsx')
 w1 = wb1.add_worksheet('Stats')
 w1.write(0, 0, 'Tract Names')
@@ -69,7 +70,7 @@ for g in range(tr1, tr2):
         tract_mem.append(hh_mem_i)
         tract_veh.append(av_veh_i)
 
-        vtrp_i = hh_vtrp_set(BTS_tract_df, hh_mem_i, av_veh_i, nan_check)
+        [vtrp_i, dist_arr] = hh_vtrp_set(BTS_tract_df, hh_mem_i, av_veh_i, nan_check)
         tract_vtrp.append(vtrp_i)
 
     avg_mem = np.average(tract_mem)

@@ -25,4 +25,4 @@ def tract_generation(og_load_list, geo_df, tract_by_county_df):
         if tract_id not in geocode:
             my_tracts.append(tract_id)
     tot_tracts = geocode + my_tracts
-    return tot_tracts
+    return [tot_tracts]

@@ -13,7 +13,7 @@ def vtrp_distance(x, vtrp_i, day, dist_ind, dist_arr, vtrp_purp_pct, start_point
     vtrp_purp_ind.remove(start_point)
 
     # Select trip purpose
-    if x == int(round(vtrp_i))-1:
+    if x == int((vtrp_i))-1:
         # Last trip must be home each day
         purp_x = "Home"
     else:

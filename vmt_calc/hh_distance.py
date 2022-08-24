@@ -2,19 +2,20 @@ from hh_details_set import hh_details_set
 from vtrp_distance import vtrp_distance
 from temp_scaling import temp_scaling
 from hh_vtrp_set import hh_vtrp_set
+from home_chg import home_chg
 import numpy as np
 import pandas as pd
-def hh_distance(ACS_tract_df, BTS_tract_df, ug_scale, nan_check, checks, track_purpose):
+def hh_distance(ACS_tract_df, BTS_tract_df, ug_scale, nan_check, checks, track_purpose, evBool):
     surp_energy = 0
     surp_charge = np.zeros(24)
-    max_daily_energy = 0
     # CHARGE LEVEL MUST BE RANDOMLY SELECTED, EVENTUALLY
     chargeLevel = "L2"
+    ldv_rate = 0.32
     # Create Vehicle Trip Profiles
     hh_hourly_dist = np.zeros(24)
     ann_hourly_dist = np.zeros(8808)
-    # ann_hourly_energy = np.zeros(8808)
-    # ann_hourly_home_energy = np.zeros(8808)
+    ann_hourly_energy = np.zeros(8808)
+    ann_hourly_home_energy = np.zeros(8808)
     home_hourly_dist = np.zeros(8808) # Track home-trips per hh ONLY
 
     purp_list = ["Home", "Work", "School", "Med", "Shop", "Social", "Transport", "Meals", "Other"]
@@ -29,9 +30,9 @@ def hh_distance(ACS_tract_df, BTS_tract_df, ug_scale, nan_check, checks, track_p
     for day in range(0, 367):
         # Scale Function
         [wkday_scale, month_scale] = temp_scaling(day)
-        start_point = "Home"
+        start_point = "Home"        
         # Iterate by number of vehicle trips per household
-        for x in range(int(round(vtrp_i))):
+        for x in range(int(vtrp_i)):
             # Determine trip purpose by weekend or weekday weighted percentages
             wknd_test = day/7 % 1
             if wknd_test >= 0.714:
@@ -56,8 +57,10 @@ def hh_distance(ACS_tract_df, BTS_tract_df, ug_scale, nan_check, checks, track_p
             s_h = day*24 + s_t
             #ann_hourly_dist[s_h] = tract_hourly_dist[s_t]
             ann_hourly_dist[s_h] = ann_hourly_dist[s_h] + vtrp_dist_x
+            ann_hourly_energy[s_h] = ann_hourly_energy[s_h] + ldv_rate*vtrp_dist_x
+        if evBool == True:
+            [surp_energy, surp_charge, ann_hourly_home_energy, checks] = home_chg(ann_hourly_energy, ann_hourly_home_energy, home_hourly_dist, day, surp_energy, surp_charge, chargeLevel, av_veh_i, checks)
 
             # CALCULATE THIS LATER, ELEMENT BY ELEMENT
 #            ann_hourly_energy[s_h] = ann_hourly_energy[s_h] + ev_pct/100*ldv_rate*vtrp_dist_x
-
-    return [ann_hourly_dist, checks, track_purpose, dist_by_purp]
+    return [ann_hourly_dist, ann_hourly_energy, ann_hourly_home_energy, checks, track_purpose, dist_by_purp, vtrp_i]

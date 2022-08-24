@@ -5,7 +5,16 @@ import xlsxwriter
 import numpy as np
 import pandas as pd
 
+source = sys.argv[1]
+evBool = sys.argv[2]
+pt_num = sys.argv[3]
+tr1 = int(sys.argv[4])
+tr2 = int(sys.argv[5])
+
 from set_paths import set_paths
+# Set Directories
+[home_dir, data_dir, output_dir] = set_paths(source)
+
 from data_gather import data_gather
 from tract_distance import tract_distance
 from tract_generation import tract_generation
@@ -14,15 +23,8 @@ from tract_generation import tract_generation
 # trat range: np.size(tot_tracts)]
 # def vmt_calc(source, pt_num, tr1, tr2):
 
-source = sys.argv[1]
-pt_num = sys.argv[2]
-tr1 = int(sys.argv[3])
-tr2 = int(sys.argv[4])
-
 # Set seed for stochastics to maintain repeatability across results
 random.seed(26)
-# Set Directories
-[home_dir, data_dir, output_dir] = set_paths(source)
 
 # Gather DataFrames and Load List
 [og_load_list, ACS_df, BTS_df, links_df, tract_by_county_df, geo_df] = data_gather(data_dir)
@@ -36,23 +38,29 @@ short_trips = 0
 hh_mem_not_int = 0
 supplanted_tracts = 0
 single_veh_double_rate = 0
-checks = [short_trips, hh_mem_not_int, supplanted_tracts, single_veh_double_rate]
+tot_vtrips = 0
+checks = [short_trips, hh_mem_not_int, supplanted_tracts, single_veh_double_rate, tot_vtrips]
 
 geo_distance = []
 g_dist_sum = []
 geo_trip_purp = pd.DataFrame(columns = ["Home", "Work", "School", "Med", "Shop", "Social", "Transport", "Meals", "Other"])
 geo_dist_by_purp = pd.DataFrame(columns = ["Home", "Work", "School", "Med", "Shop", "Social", "Transport", "Meals", "Other"])
+geo_energy = []
+geo_h_energy = []
 
 os.chdir(output_dir)
 
 for g in range(tr1, tr2):
     track_purpose = np.zeros(9)
     # Function for tract distance calculation
-    [tot_tract_distance, checks, track_purpose, tract_dist_by_purp] = tract_distance(g, tot_tracts, BTS_df, ACS_df, checks, track_purpose)
+    [tot_tract_distance, tot_tract_hourly_energy, tot_tract_h_hourly_energy, checks, track_purpose, tract_dist_by_purp] = tract_distance(g, tot_tracts, BTS_df, ACS_df, checks, track_purpose, evBool)
     geo_distance.append(tot_tract_distance)
     g_dist_sum.append(sum(tot_tract_distance))
     geo_trip_purp = pd.concat([geo_trip_purp, pd.DataFrame(track_purpose.reshape(1,-1), columns=list(geo_trip_purp))], ignore_index=True)
     geo_dist_by_purp = pd.concat([geo_dist_by_purp, pd.DataFrame(tract_dist_by_purp.reshape(1,-1), columns=list(geo_dist_by_purp))], ignore_index=True)
+    geo_energy.append(tot_tract_hourly_energy)
+    geo_h_energy.append(tot_tract_h_hourly_energy)
+
 wb1 = xlsxwriter.Workbook('Total_Tract_Distances_p' + pt_num + '.xlsx')
 w1 = wb1.add_worksheet('Tract VMT')
 w1.write(0, 0, 'Tract Names')
@@ -116,8 +124,24 @@ w3n.write_column(1, 8, geo_dist_by_purp.iloc[:,7])
 w3n.write_column(1, 9, geo_dist_by_purp.iloc[:,8])
 wb3.close()
 
+wb4 = xlsxwriter.Workbook('Tract_Energies_p' + pt_num + '.xlsx')
+w4 = wb4.add_worksheet('transit_load_in_kWh')
+w4n = wb4.add_worksheet('home_load_in_kWh')
+w4.write(0, 0, 'Hours')
+w4.write_column(1, 0, hours_year)
+w4n.write(0, 0, 'Hours')
+w4n.write_column(1, 0, hours_year)
+for g in range(tr1, tr2):
+    w4.write(0, g-(tr1-1), tot_tracts[g])
+    w4.write_column(1,  g-(tr1-1), geo_energy[g-tr1])
+    w4n.write(0, g-(tr1-1), tot_tracts[g])
+    w4n.write_column(1, g-(tr1-1), geo_h_energy[g-tr1])
+wb4.close()
+
 print("Total Supplanted Tracts: ", checks[2])
 print("Total hh with non-integer members: ", checks[1])
+print("Annual Total Trip Count (Millions): ", checks[4])
+print("Single Vehicles that got double charge rates: ", single_veh_double_rate)
 
 """
 ADDRESS THIS WHEN CONSUMPTION IS INTRODUCED (SEPARATE FUNCTION)
@@ -126,11 +150,6 @@ ADDRESS THIS WHEN CONSUMPTION IS INTRODUCED (SEPARATE FUNCTION)
 # pre-set day-long and year-long hourly lists
 # hours_day = [elem for elem in range(24)]
 # hours_year = [elem for elem in range(8808)]
-
-# # Set consumption rate
-# ldv_rate = 0.32 # in kWh/mi
-# # Set percentage of electric vehicles on the road
-# ev_pct = 100 # in %
 
 # #Uniform Conditions:
 # EV_chghome = 100 # in %
